@@ -6,7 +6,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 7114
+          "Port": 8081
         }
       ],
       "UpstreamPathTemplate": "/apigateway/AdmissionService",

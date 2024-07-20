@@ -1,6 +1,0 @@
-@StudentAttendenceManagement_HostAddress = http://localhost:5032
-
-GET {{StudentAttendenceManagement_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
