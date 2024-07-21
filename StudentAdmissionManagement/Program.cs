@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using StudentAdmissionManagement.Data;
 using System.Configuration;
+using MySql.Data.MySqlClient;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,16 +13,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 //builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<MyApiServiceContext>(options => options.UseSqlServer("jdbc:mysql://localhost:3306/tutorial"));
+builder.Services.AddDbContext<MyApiServiceContext>(options =>
+    options.UseMySql("Server=localhost;Database=tutorial;User Id=tutorial_user;Password=abcd1234;",
+        new MySqlServerVersion(new Version(8, 0, 21))));
+
 
 var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-   // app.UseSwagger();
-    //app.UseSwaggerUI();
-}
 
 app.UseHttpsRedirection();
 

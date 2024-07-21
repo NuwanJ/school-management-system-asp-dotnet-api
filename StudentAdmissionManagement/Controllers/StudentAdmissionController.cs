@@ -54,6 +54,16 @@ namespace StudentAdmissionManagement.Controllers
             return admissionRecord;
         }
 
+        // POST: api/Products
+        [HttpPost]
+        public async Task<ActionResult<StudentAdmissionDetailsModel>> PostProduct(StudentAdmissionDetailsModel admissionRecord)
+        {
+            _context.Admissions.Add(admissionRecord);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetAdmissionRecord", new { id = admissionRecord.Id }, admissionRecord);
+        }
+
         // PUT: api/Products/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProduct(int id, StudentAdmissionDetailsModel admissionRecord)
