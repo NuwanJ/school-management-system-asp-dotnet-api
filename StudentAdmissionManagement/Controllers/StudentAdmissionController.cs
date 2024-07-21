@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using StudentAdmissionManagement;
+using Microsoft.EntityFrameworkCore;
+using StudentAdmissionManagement.Data;
 
 namespace StudentAdmissionManagement.Controllers
 {
@@ -7,28 +8,85 @@ namespace StudentAdmissionManagement.Controllers
     [ApiController]
     public class StudentAdmissionController : ControllerBase
     {
-        // GET: api/<StudentAdmissionController>
-        [HttpGet]
-        public IEnumerable<StudentAdmissionDetailsModel> Get()
+        private readonly MyApiServiceContext _context;
+
+        public StudentAdmissionController(MyApiServiceContext context)
         {
-            StudentAdmissionDetailsModel admissionobj1 = new StudentAdmissionDetailsModel();
-            StudentAdmissionDetailsModel admissionobj2 = new StudentAdmissionDetailsModel();
+            _context = context;
+        }
 
-            admissionobj1.StudentID = 1;
-            admissionobj1.StudentName = "Adam";
-            admissionobj1.StudentClass = "X";
-            admissionobj1.DateOfJoining = DateTime.Now;
+        // GET: api/admissions
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<StudentAdmissionDetailsModel>>> GetAllAdmissions()
+        {
+            //StudentAdmissionDetailsModel admissionobj1 = new StudentAdmissionDetailsModel();
+            //StudentAdmissionDetailsModel admissionobj2 = new StudentAdmissionDetailsModel();
 
-            admissionobj2.StudentID = 2;
-            admissionobj2.StudentName = "Brad";
-            admissionobj2.StudentClass = "IX";
-            admissionobj2.DateOfJoining = DateTime.Now;
-            List<StudentAdmissionDetailsModel> listofobj = new List<StudentAdmissionDetailsModel>
+            //admissionobj1.StudentID = 1;
+            //admissionobj1.StudentName = "Adam";
+            //admissionobj1.StudentClass = "X";
+            //admissionobj1.DateOfJoining = DateTime.Now;
+
+            //admissionobj2.StudentID = 2;
+            //admissionobj2.StudentName = "Brad";
+            //admissionobj2.StudentClass = "IX";
+            //admissionobj2.DateOfJoining = DateTime.Now;
+            //List<StudentAdmissionDetailsModel> listofobj = new List<StudentAdmissionDetailsModel>
+            //{
+            //    admissionobj1,
+            //    admissionobj2
+            //};
+            //return listofobj;
+            return await _context.Admissions.ToListAsync();
+        }
+
+        // GET: api/Products/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<StudentAdmissionDetailsModel>> GetAdmissionRecord(int id)
+        {
+            var admissionRecord = await _context.Admissions.FindAsync(id);
+
+            if (admissionRecord == null)
             {
-                admissionobj1,
-                admissionobj2
-            };
-            return listofobj;
+                return NotFound();
+            }
+
+            return admissionRecord;
+        }
+
+        // PUT: api/Products/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutProduct(int id, StudentAdmissionDetailsModel admissionRecord)
+        {
+            if (id != admissionRecord.Id)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(admissionRecord).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!AdmissionsExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        private bool AdmissionsExists(int id)
+        {
+            return _context.Admissions.Any(e => e.Id == id);
         }
     }
 }
